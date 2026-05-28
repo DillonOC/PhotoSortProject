@@ -66,6 +66,10 @@ Currently just one class, PhotoSort.
 
                         9. Unknown date folder
                         If nothing reliable exists.
+                        
+                        And return the source of the date.
+
+                        If ImageIO cannot handle the image type it will fail.
 ####              Refactor ideas:
                         Could be moved into it's own class for date extraction, with the metadata object being an attribute which it extracts when
                         called and a calender object set to null. Then each different date location can be a method which attempts to extract the date
@@ -73,7 +77,7 @@ Currently just one class, PhotoSort.
 
 ###     stripMetaDataCreateHash:
 ####              Method purpose:
-                    Removes Metadata from the file and then creates a hash of the data in the file (which can be compared to spot duplicates).
+                    Normalises the image by decoding it and re-encoding it without metadata, then hashes the normalised bytes.
 ####              Inputs:
                     The file (photo) that is being used to create the hash.
 ####              Outputs:
@@ -92,8 +96,10 @@ Currently just one class, PhotoSort.
 ####              Known bugs / limitations:
                     Bugs: unknown
                     Limitations: Currently uses SHA-256 as hash, this means it will only capture images exactly the same. 
+                                 Does not currently check the rotation of the image, could cause it to miss duplicates.
+                                 Normalising the image may take lots of time especially for large images.
 ####              Refactor ideas:
-                    Could again be refactored into it's own class. When refactored should switch from using SHA-256 to a perceptual hash (need to do more research).
+                    Could again be refactored into it's own class. When refactored should switch to using both SHA-256 and a perceptual hash (need to do more research), to catch similar photos.
 
 ###     main:
 ####              Method purpose:
@@ -122,5 +128,31 @@ Currently just one class, PhotoSort.
                     Limitations: Currently has the limitations assosciated with the methods called. Also the fact the comparison logic is not seperated. This main function controlling the class should
                     be seperate too.
 ####              Refactor ideas:
-                    Seperate main into a controlling class. Seperate out the comparison logic so it can be called from the main function in a seperate class. HashMap can be stored as an attribute to 
-                    the PhotoSort class.
+                    Seperate main into a controlling class. Seperate out the comparison logic so it can be called from the main function in a seperate class. HashMap can be stored in the class it is seperated into. Need to add handling for photos where date is not found and also handling of HEIC images from apple.
+
+# Possible Future Modules
+
+## DateExtractor
+Responsibility:
+- Extract date taken from metadata
+- Fall back to file date if metadata missing
+
+## ExactImageHasher
+Responsibility:
+- Strip metadata by decoding image
+- Create SHA-256 hash from image content
+
+## DuplicateDetector
+Responsibility:
+- Track hashes already seen
+- Decide whether current image is a duplicate
+
+## PhotoSortService
+Responsibility:
+- Coordinate the sorting process
+- Decide where files should be moved
+
+## FileMover
+Responsibility:
+- Create folders
+- Move/copy files safely

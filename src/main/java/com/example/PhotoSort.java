@@ -106,7 +106,7 @@ public class PhotoSort {
                 String year = Integer.toString(dateTaken.get(Calendar.YEAR));
                 String month = String.format("%02d", dateTaken.get(Calendar.MONTH) + 1);  // Zero-padded month
                 //String week = String.format("%02d", dateTaken.get(Calendar.WEEK_OF_MONTH) + 1);
-                String day = String.format("%02d", dateTaken.get(Calendar.DAY_OF_MONTH) + 1);
+                String day = String.format("%02d", dateTaken.get(Calendar.DAY_OF_MONTH));
                 
                 // Combine the directory paths
                 File baseDir = new File(directory, "TestOutput");
