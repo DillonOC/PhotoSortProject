@@ -156,3 +156,7 @@ Responsibility:
 Responsibility:
 - Create folders
 - Move/copy files safely
+
+## Main
+Responsibility:
+- Entry point to program
