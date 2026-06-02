@@ -48,7 +48,7 @@ public class PhotoSort {
         
         if (directoryExif != null) {
             // Get the Date Taken (DateTimeOriginal) from EXIF
-            Date dateTaken = directoryExif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            Date dateTaken = directoryExif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL); // Should be getDateOriginal()
             
             if (dateTaken != null) {
                 // Convert Date to Calendar
