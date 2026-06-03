@@ -4,9 +4,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
-import java.util.Date;
+import java.net.URL;
 import java.util.Calendar;
-import java.util.TimeZone;
+
 
 /**
  * Unit test for DateExtractor.
@@ -32,20 +32,29 @@ public class DateExtractorTest
         return new TestSuite( DateExtractorTest.class );
     }
 
+    /* Helpers */
+    private File getTestResourceFile(String resourceName) throws Exception {
+        URL resource = getClass().getClassLoader().getResource(resourceName);
+
+        assertNotNull("Could not find test resource: " + resourceName, resource);
+
+        return new File(resource.toURI());
+    }
+    
     /**
      * Tests
      */
-    public void testReturnsDateTimeOriginalWhenPresent() throws DateExtractionException
+    public void testReturnsDateTimeOriginalWhenPresent() throws Exception
     {
         // Create expected date calendar object for comparison.
-        Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-07:00"));
+        Calendar expected = Calendar.getInstance();
         expected.clear();
         expected.set(2024, Calendar.APRIL, 10, 21, 32, 10);
         expected.set(Calendar.MILLISECOND, 979);
 
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = new File("C:\\Users\\Dillo\\Documents\\PhotoSortProject\\src\\test\\resources\\IMG_1697.JPG");
+        File photo = getTestResourceFile("IMG_1697.JPG");
         
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
@@ -60,22 +69,22 @@ public class DateExtractorTest
 
     }
 
-    public void testReturnsNullWhenNoExifDateTimeOriginalExists() throws DateExtractionException
+    public void testReturnsNullWhenNoExifDateTimeOriginalExists() throws Exception
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = new File("C:\\Users\\Dillo\\Documents\\PhotoSortProject\\src\\test\\resources\\IMG_1697 - Copy.JPG");
+        File photo = getTestResourceFile("IMG_1697 - Copy.JPG");
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null
         assertTrue(dateTaken == null);
     }
 
-    public void testDoesNotCrashWhenFileHasNoExifDirectory() throws DateExtractionException
+    public void testDoesNotCrashWhenFileHasNoExifDirectory() throws Exception
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = new File("C:\\Users\\Dillo\\Documents\\PhotoSortProject\\src\\test\\resources\\IMG_1697 - Copy (2).JPG");
+        File photo = getTestResourceFile("IMG_1697 - Copy (2).JPG");
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null
