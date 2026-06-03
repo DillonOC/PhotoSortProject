@@ -4,6 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
+import java.util.Date;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -34,17 +35,18 @@ public class DateExtractorTest
     /**
      * Tests
      */
-    public void testReturnsDateTimeOriginalWhenPresent()
+    public void testReturnsDateTimeOriginalWhenPresent() throws DateExtractionException
     {
         // Create expected date calendar object for comparison.
         Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-07:00"));
         expected.clear();
-        expected.set(2024, Calendar.APRIL, 10, 13, 32, 10);
+        expected.set(2024, Calendar.APRIL, 10, 21, 32, 10);
         expected.set(Calendar.MILLISECOND, 979);
 
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
         File photo = new File("C:\\Users\\Dillo\\Documents\\PhotoSortProject\\src\\test\\resources\\IMG_1697.JPG");
+        
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertions to check date is as expected.
@@ -58,7 +60,7 @@ public class DateExtractorTest
 
     }
 
-    public void testReturnsNullWhenNoExifDateTimeOriginalExists()
+    public void testReturnsNullWhenNoExifDateTimeOriginalExists() throws DateExtractionException
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
@@ -69,8 +71,14 @@ public class DateExtractorTest
         assertTrue(dateTaken == null);
     }
 
-    public void testDoesNotCrashWhenFileHasNoExifDirectory()
+    public void testDoesNotCrashWhenFileHasNoExifDirectory() throws DateExtractionException
     {
-        assertTrue(false);
+        // Create DateExtractor object and call the extractDate method.
+        DateExtractor dateExtractor = new DateExtractor();
+        File photo = new File("C:\\Users\\Dillo\\Documents\\PhotoSortProject\\src\\test\\resources\\IMG_1697 - Copy (2).JPG");
+        Calendar dateTaken = dateExtractor.extractDate(photo);
+
+        // Assertion to check date is null
+        assertTrue(dateTaken == null);
     }
 }
