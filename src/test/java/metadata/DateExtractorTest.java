@@ -104,4 +104,20 @@ public class DateExtractorTest
         }
         catch(DateExtractionException err) {}
     }
+
+        public void testThrowsErrorWhenFileNotFound() throws Exception
+        {
+            // Create DateExtractor object.
+            DateExtractor dateExtractor = new DateExtractor();
+
+            // Set up resource.
+            File photo = new File("this-file-should-not-exist.jpg");
+
+            // Catch the expected DateExtractionException and fail if not
+            try {
+                dateExtractor.extractDate(photo);
+                fail("Expected DateExtractionException to be thrown");
+            }
+            catch(DateExtractionException err) {}
+        }
 }

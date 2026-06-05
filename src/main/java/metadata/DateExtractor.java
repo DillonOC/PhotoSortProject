@@ -12,7 +12,8 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 public class DateExtractor {
     
-    public Calendar extractDate(File photo) throws DateExtractionException {
+    public Calendar extractDate(File photo) throws DateExtractionException 
+    {
         // Initialize the calendar object
         Calendar extractedDate = null;
 
