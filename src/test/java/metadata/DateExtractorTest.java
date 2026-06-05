@@ -90,4 +90,18 @@ public class DateExtractorTest
         // Assertion to check date is null
         assertTrue(dateTaken == null);
     }
+
+    public void testThrowsDateExtractionExceptionWhenFileInvalid() throws Exception
+    {
+        // Create DateExtractor object and call the extractDate method.
+        DateExtractor dateExtractor = new DateExtractor();
+        File photo = getTestResourceFile("invalid_image.jpg");
+
+        // Catch the expected DateExtractionException and fail if not
+        try {
+            dateExtractor.extractDate(photo);
+            fail("Expected DateExtractionException to be thrown");
+        }
+        catch(DateExtractionException err) {}
+    }
 }
