@@ -73,7 +73,7 @@ public class DateExtractorTest
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("IMG_1697 - Copy.JPG");
+        File photo = getTestResourceFile("IMG_1697-no-datetimeoriginal.JPG");
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null
@@ -84,7 +84,7 @@ public class DateExtractorTest
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("IMG_1697 - Copy (2).JPG");
+        File photo = getTestResourceFile("IMG_1697-no-metadata.JPG");
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null

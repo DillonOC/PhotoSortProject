@@ -4,11 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-
-import org.apache.commons.imaging.ImagingException;
 
 public class ContentHasherTest 
     extends TestCase
@@ -47,7 +43,7 @@ public class ContentHasherTest
 
         // Set up resources.
         File photo1 = getTestResourceFile("IMG_1697.JPG");
-        File photo2 = getTestResourceFile("IMG_1697 - Copy (2).JPG");
+        File photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG");
         
         // Call hash method.
         String hash1 = contentHasher.createContentHash(photo1);

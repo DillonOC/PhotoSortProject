@@ -147,15 +147,15 @@ Responsibility:
 - Track hashes already seen
 - Decide whether current image is a duplicate
 
-## PhotoSortService
-Responsibility:
-- Coordinate the sorting process
-- Decide where files should be moved
-
 ## FileMover
 Responsibility:
 - Create folders
 - Move/copy files safely
+
+## PhotoSortService
+Responsibility:
+- Coordinate the sorting process
+- Decide where files should be moved
 
 ## Main
 Responsibility:
