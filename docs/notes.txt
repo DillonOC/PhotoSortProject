@@ -1,0 +1,4 @@
+DestinationPlanner:
+input: Calendar object containing the datetime from DateExtractor
+output: File objects with related datetime structure
+throws: ?
