@@ -11,8 +11,8 @@ public class DestinationPlanner
         Integer year = photoDate.get(Calendar.YEAR);
         Integer month = photoDate.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
 
-        Path destination = outputFolder.resolve(year.toString()).resolve(month.toString()) 
-                .resolve(photo.getFileName());
+        Path destination = outputFolder.resolve(year.toString())
+            .resolve(String.format("%02d",month)).resolve(photo.getFileName());
         
         return destination;
     }
@@ -22,10 +22,11 @@ public class DestinationPlanner
         Integer year = photoDate.get(Calendar.YEAR);
         Integer month = photoDate.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
 
-        Path destination = outputFolder.resolve(year.toString()).resolve(month.toString())
+        Path destination = outputFolder.resolve(year.toString())
+            .resolve(String.format("%02d", month))
                 .resolve("Duplicates").resolve(photo.getFileName());
         
         return destination;
     }
-    
+
 }
