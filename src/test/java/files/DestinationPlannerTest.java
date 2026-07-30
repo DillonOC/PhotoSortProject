@@ -38,7 +38,7 @@ public class DestinationPlannerTest
         return new File(resource.toURI());
     }
 
-    public void testPlanSortedPhotoDestinationBuildsYearMonthPathWithFilename() throws Exception 
+    public void testPlanSortedPhotoDestinationBuildsYearMonthPathWithFilenameJanuary() throws Exception 
     {
         // Instantiate DestinationPlanner Object
         DestinationPlanner destinationPlanner = new DestinationPlanner();
@@ -49,7 +49,7 @@ public class DestinationPlannerTest
         // Create calendar object for destinationplanner input
         Calendar photoDate = Calendar.getInstance();
         photoDate.clear();
-        photoDate.set(2024, Calendar.APRIL, 10, 21, 32, 10);
+        photoDate.set(2024, Calendar.JANUARY, 10, 21, 32, 10);
         photoDate.set(Calendar.MILLISECOND, 979);
 
         // Create output folder path for destinationplanner input
@@ -57,7 +57,7 @@ public class DestinationPlannerTest
 
         // Create expected destination path for comparison.
         Path expectedPath = outputFolder.resolve("2024")
-            .resolve("04").resolve(photo.getFileName());
+            .resolve("01").resolve(photo.getFileName());
 
         // Call the planSortedPhotoDestination method.
         Path plannedDestination = destinationPlanner.planSortedPhotoDestination(outputFolder, photoDate, photo);
@@ -65,7 +65,7 @@ public class DestinationPlannerTest
         assertTrue(plannedDestination.equals(expectedPath));
     }
 
-    public void testPlanExactDuplicatePhotoDestinationBuildsYearMonthPathWithFilename() throws Exception 
+    public void testPlanExactDuplicatePhotoDestinationBuildsYearMonthPathWithFilenameJanuary() throws Exception 
     {
         // Instantiate DestinationPlanner Object
         DestinationPlanner destinationPlanner = new DestinationPlanner();
@@ -76,7 +76,7 @@ public class DestinationPlannerTest
         // Create calendar object for destinationplanner input
         Calendar photoDate = Calendar.getInstance();
         photoDate.clear();
-        photoDate.set(2024, Calendar.APRIL, 10, 21, 32, 10);
+        photoDate.set(2024, Calendar.JANUARY, 10, 21, 32, 10);
         photoDate.set(Calendar.MILLISECOND, 979);
 
         // Create output folder path for destinationplanner input
@@ -84,7 +84,7 @@ public class DestinationPlannerTest
 
         // Create expected destination path for comparison.
         Path expectedPath = outputFolder.resolve("2024")
-            .resolve("04").resolve("Duplicates").resolve(photo.getFileName());
+            .resolve("01").resolve("Duplicates").resolve(photo.getFileName());
 
         // Call the planSortedPhotoDestination method.
         Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo);
@@ -92,4 +92,57 @@ public class DestinationPlannerTest
         assertTrue(plannedDestination.equals(expectedPath));
     }
     
+    public void testPlanSortedPhotoDestinationBuildsYearMonthPathWithFilenameDecember() throws Exception 
+    {
+        // Instantiate DestinationPlanner Object
+        DestinationPlanner destinationPlanner = new DestinationPlanner();
+
+        // Set up resources
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+
+        // Create calendar object for destinationplanner input
+        Calendar photoDate = Calendar.getInstance();
+        photoDate.clear();
+        photoDate.set(2024, Calendar.DECEMBER, 10, 21, 32, 10);
+        photoDate.set(Calendar.MILLISECOND, 979);
+
+        // Create output folder path for destinationplanner input
+        Path outputFolder = Path.of("output");
+
+        // Create expected destination path for comparison.
+        Path expectedPath = outputFolder.resolve("2024")
+            .resolve("12").resolve(photo.getFileName());
+
+        // Call the planSortedPhotoDestination method.
+        Path plannedDestination = destinationPlanner.planSortedPhotoDestination(outputFolder, photoDate, photo);
+
+        assertTrue(plannedDestination.equals(expectedPath));
+    }
+
+    public void testPlanExactDuplicatePhotoDestinationBuildsYearMonthPathWithFilenameDecember() throws Exception 
+    {
+        // Instantiate DestinationPlanner Object
+        DestinationPlanner destinationPlanner = new DestinationPlanner();
+
+        // Set up resources
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+
+        // Create calendar object for destinationplanner input
+        Calendar photoDate = Calendar.getInstance();
+        photoDate.clear();
+        photoDate.set(2024, Calendar.DECEMBER, 10, 21, 32, 10);
+        photoDate.set(Calendar.MILLISECOND, 979);
+
+        // Create output folder path for destinationplanner input
+        Path outputFolder = Path.of("output");
+
+        // Create expected destination path for comparison.
+        Path expectedPath = outputFolder.resolve("2024")
+            .resolve("12").resolve("Duplicates").resolve(photo.getFileName());
+
+        // Call the planSortedPhotoDestination method.
+        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo);
+
+        assertTrue(plannedDestination.equals(expectedPath));
+    }
 }
