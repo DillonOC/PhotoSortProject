@@ -47,12 +47,17 @@ public class FileMoverTest extends TestCase {
         Path source = photo.toPath();
         Path destination = photo.toPath().getParent().resolve("2024").resolve("01").resolve("IMG_1697.JPG");
 
-        System.out.println(destination.toString());
         // Call the moveToDestination method
         fileMover.moveToDestination(source, destination);
 
         assertTrue(Files.isDirectory(destination.getParent().getParent()));
         assertTrue(Files.isDirectory(destination.getParent()));
         assertTrue(Files.isRegularFile(destination));
+        assertFalse(Files.exists(source));
+
+        // Clean up
+        Files.delete(destination);
+        Files.delete(destination.getParent());
+        Files.delete(destination.getParent().getParent());
     }
 }
