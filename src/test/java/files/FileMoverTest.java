@@ -3,6 +3,8 @@ package files;
 import java.io.File;
 
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -35,6 +37,22 @@ public class FileMoverTest extends TestCase {
         return new File(resource.toURI());
     }
 
-    
+    public void testFileMoverCreatesDirectoriesAndMovesFile() throws Exception
+    {
+        // Instantiate FileMover object
+        FileMover fileMover = new FileMover();
 
+        // Set up resources
+        File photo = getTestResourceFile("IMG_1697.JPG");
+        Path source = photo.toPath();
+        Path destination = photo.toPath().getParent().resolve("2024").resolve("01").resolve("IMG_1697.JPG");
+
+        System.out.println(destination.toString());
+        // Call the moveToDestination method
+        fileMover.moveToDestination(source, destination);
+
+        assertTrue(Files.isDirectory(destination.getParent().getParent()));
+        assertTrue(Files.isDirectory(destination.getParent()));
+        assertTrue(Files.isRegularFile(destination));
+    }
 }
