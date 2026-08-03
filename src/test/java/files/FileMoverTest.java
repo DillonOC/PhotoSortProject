@@ -111,9 +111,9 @@ public class FileMoverTest extends TestCase {
         Path destination = tempDirectory.resolve("2024").resolve("01").resolve("testfile.jpg");
 
         Files.createDirectories(destination.getParent());
-        Files.writeString(destination, "test contents");
+        Files.writeString(destination, "destination contents");
         Files.createDirectories(source.getParent());
-        Files.writeString(source, "test contents");
+        Files.writeString(source, "source contents");
 
         // Call the moveToDestination method
         try {
@@ -121,5 +121,10 @@ public class FileMoverTest extends TestCase {
             fail("Expected FileAlreadyExistsException to be thrown");
         }
         catch(FileAlreadyExistsException err) {}
+        assertTrue(Files.isRegularFile(source));
+        assertEquals("source contents", Files.readString(source));
+
+        assertTrue(Files.isRegularFile(destination));
+        assertEquals("destination contents", Files.readString(destination));
     }
 }
