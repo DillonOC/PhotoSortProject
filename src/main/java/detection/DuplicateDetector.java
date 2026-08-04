@@ -1,33 +1,33 @@
 package detection;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DuplicateDetector {
 
-    private Map<String,File> duplicateMap;
+    private Map<String,Path> duplicateMap;
 
     // Constructor
     public DuplicateDetector()
     {
-        duplicateMap = new HashMap<String, File>();
+        duplicateMap = new HashMap<String, Path>();
     }
 
     // Method for adding to Map
-    private void addToDuplicateMap(String hash, File photo) 
+    private void addToDuplicateMap(String hash, Path photo) 
     {
         duplicateMap.put(hash, photo);
     }
 
-    public boolean detectDuplicate(String hash, File photo)
+    public Path detectDuplicate(String hash, Path photo)
     {
         if(duplicateMap.containsKey(hash)) {
-            return true;
+            return duplicateMap.get(hash);
         }
         else {
             addToDuplicateMap(hash, photo);
-            return false;
+            return null;
         }
     }
     

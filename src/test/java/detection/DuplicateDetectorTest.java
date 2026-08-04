@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
 public class DuplicateDetectorTest 
     extends TestCase
@@ -42,11 +43,11 @@ public class DuplicateDetectorTest
         DuplicateDetector duplicateDetector = new DuplicateDetector();
 
         // Set up resources
-        File photo = getTestResourceFile("IMG_1697.JPG");
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
         String hash = "test";
 
         // Call duplicate detector
-        assertFalse(duplicateDetector.detectDuplicate(hash, photo));
+        assertTrue(duplicateDetector.detectDuplicate(hash, photo) == null);
     }
 
     public void testSameHashDetectedAsDuplicate() throws Exception 
@@ -56,13 +57,13 @@ public class DuplicateDetectorTest
         DuplicateDetector duplicateDetector = new DuplicateDetector();
 
         // Set up resources
-        File photo1 = getTestResourceFile("IMG_1697.JPG");
-        File photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG");
+        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
         String hash = "test";
 
         // Call duplicate detector
-        assertFalse(duplicateDetector.detectDuplicate(hash, photo1));
-        assertTrue(duplicateDetector.detectDuplicate(hash, photo2));
+        assertTrue(duplicateDetector.detectDuplicate(hash, photo1) == null);
+        assertTrue(duplicateDetector.detectDuplicate(hash, photo2).equals(photo1));
     }
 
     public void testDifferentHashIsNotDuplicate() throws Exception
@@ -71,14 +72,14 @@ public class DuplicateDetectorTest
         DuplicateDetector duplicateDetector = new DuplicateDetector();
 
         // Set up resources
-        File photo1 = getTestResourceFile("IMG_1697.JPG");
-        File photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG");
+        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
         String hash1 = "test1";
         String hash2 = "test2";
 
         // Call duplicate detector
-        assertFalse(duplicateDetector.detectDuplicate(hash1, photo1));
-        assertFalse(duplicateDetector.detectDuplicate(hash2, photo2));
+        assertTrue(duplicateDetector.detectDuplicate(hash1, photo1) == null);
+        assertTrue(duplicateDetector.detectDuplicate(hash2, photo2) == null);
     }
 
     public void testNewDetectorStartsEmpty() throws Exception
@@ -88,12 +89,12 @@ public class DuplicateDetectorTest
         DuplicateDetector duplicateDetector2 = new DuplicateDetector();
 
         // Set up resources
-        File photo = getTestResourceFile("IMG_1697.JPG");       
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();       
         String hash = "test";
 
         // Call duplicate detector
-        assertFalse(duplicateDetector1.detectDuplicate(hash, photo));
-        assertTrue(duplicateDetector1.detectDuplicate(hash, photo));
-        assertFalse(duplicateDetector2.detectDuplicate(hash, photo));
+        assertTrue(duplicateDetector1.detectDuplicate(hash, photo) == null);
+        assertTrue(duplicateDetector1.detectDuplicate(hash, photo).equals(photo));
+        assertTrue(duplicateDetector2.detectDuplicate(hash, photo) == null);
     }
 }

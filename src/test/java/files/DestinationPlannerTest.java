@@ -72,6 +72,7 @@ public class DestinationPlannerTest
 
         // Set up resources
         Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path firstDuplicate = Path.of("test");
 
         // Create calendar object for destinationplanner input
         Calendar photoDate = Calendar.getInstance();
@@ -84,10 +85,10 @@ public class DestinationPlannerTest
 
         // Create expected destination path for comparison.
         Path expectedPath = outputFolder.resolve("2024")
-            .resolve("01").resolve("Duplicates").resolve(photo.getFileName());
+            .resolve("01").resolve("Duplicates - test").resolve(photo.getFileName());
 
         // Call the planSortedPhotoDestination method.
-        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo);
+        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo, firstDuplicate);
 
         assertTrue(plannedDestination.equals(expectedPath));
     }
@@ -126,6 +127,7 @@ public class DestinationPlannerTest
 
         // Set up resources
         Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path firstDuplicate = Path.of("test");
 
         // Create calendar object for destinationplanner input
         Calendar photoDate = Calendar.getInstance();
@@ -138,10 +140,10 @@ public class DestinationPlannerTest
 
         // Create expected destination path for comparison.
         Path expectedPath = outputFolder.resolve("2024")
-            .resolve("12").resolve("Duplicates").resolve(photo.getFileName());
+            .resolve("12").resolve("Duplicates - test").resolve(photo.getFileName());
 
         // Call the planSortedPhotoDestination method.
-        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo);
+        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo, firstDuplicate);
 
         assertTrue(plannedDestination.equals(expectedPath));
     }

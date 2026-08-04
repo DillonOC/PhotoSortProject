@@ -17,14 +17,14 @@ public class DestinationPlanner
         return destination;
     }
 
-    public Path planExactDuplicatePhotoDestination(Path outputFolder, Calendar photoDate, Path photo)
+    public Path planExactDuplicatePhotoDestination(Path outputFolder, Calendar photoDate, Path photo, Path firstDuplicate)
     {
         Integer year = photoDate.get(Calendar.YEAR);
         Integer month = photoDate.get(Calendar.MONTH) + 1; // Calendar.MONTH is zero-based
 
         Path destination = outputFolder.resolve(year.toString())
             .resolve(String.format("%02d", month))
-                .resolve("Duplicates").resolve(photo.getFileName());
+                .resolve("Duplicates - " + firstDuplicate.getFileName().toString()).resolve(photo.getFileName());
         
         return destination;
     }
