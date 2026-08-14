@@ -3,6 +3,7 @@ package hashing;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -16,29 +17,30 @@ import java.awt.image.BufferedImage;
 
 public class ContentHasher {
     
-    public String createContentHash(File photo) throws ContentHasherException
+    public String createContentHash(Path photo) throws ContentHasherException
     {
+        File photoFile = photo.toFile();
         // Read the image, ignoring metadata
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         BufferedImage image;
         try {
-            image = ImageIO.read(photo);
+            image = ImageIO.read(photoFile);
         }
         catch(IOException err) {
-            throw new ContentHasherException("IO Exception for: " + photo, err);
+            throw new ContentHasherException("IO Exception for: " + photoFile, err);
         }
 
-        if(image == null) {throw new ContentHasherException("Image processing failed for: " + photo);
+        if(image == null) {throw new ContentHasherException("Image processing failed for: " + photoFile);
         }
 
         try {
             Imaging.writeImage(image, byteArrayOutputStream, ImageFormats.PNG);
         }
         catch(ImagingException err) {
-            throw new ContentHasherException("Image processing failed for: " + photo, err);
+            throw new ContentHasherException("Image processing failed for: " + photoFile, err);
         }
         catch(IOException err) {
-            throw new ContentHasherException("IO Exception for: " + photo, err);
+            throw new ContentHasherException("IO Exception for: " + photoFile, err);
         }
         byte[] imageBytes = byteArrayOutputStream.toByteArray();
 

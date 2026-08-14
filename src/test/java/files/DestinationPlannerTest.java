@@ -72,23 +72,13 @@ public class DestinationPlannerTest
 
         // Set up resources
         Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
-        Path firstDuplicate = Path.of("test");
-
-        // Create calendar object for destinationplanner input
-        Calendar photoDate = Calendar.getInstance();
-        photoDate.clear();
-        photoDate.set(2024, Calendar.JANUARY, 10, 21, 32, 10);
-        photoDate.set(Calendar.MILLISECOND, 979);
-
-        // Create output folder path for destinationplanner input
-        Path outputFolder = Path.of("output");
+        Path firstDuplicate = Path.of("testfolder", "test");
 
         // Create expected destination path for comparison.
-        Path expectedPath = outputFolder.resolve("2024")
-            .resolve("01").resolve("Duplicates - test").resolve(photo.getFileName());
+        Path expectedPath = firstDuplicate.getParent().resolve("Duplicates - test").resolve(photo.getFileName());
 
         // Call the planSortedPhotoDestination method.
-        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo, firstDuplicate);
+        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(photo, firstDuplicate);
 
         assertTrue(plannedDestination.equals(expectedPath));
     }
@@ -116,34 +106,6 @@ public class DestinationPlannerTest
 
         // Call the planSortedPhotoDestination method.
         Path plannedDestination = destinationPlanner.planSortedPhotoDestination(outputFolder, photoDate, photo);
-
-        assertTrue(plannedDestination.equals(expectedPath));
-    }
-
-    public void testPlanExactDuplicatePhotoDestinationBuildsYearMonthPathWithFilenameDecember() throws Exception 
-    {
-        // Instantiate DestinationPlanner Object
-        DestinationPlanner destinationPlanner = new DestinationPlanner();
-
-        // Set up resources
-        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
-        Path firstDuplicate = Path.of("test");
-
-        // Create calendar object for destinationplanner input
-        Calendar photoDate = Calendar.getInstance();
-        photoDate.clear();
-        photoDate.set(2024, Calendar.DECEMBER, 10, 21, 32, 10);
-        photoDate.set(Calendar.MILLISECOND, 979);
-
-        // Create output folder path for destinationplanner input
-        Path outputFolder = Path.of("output");
-
-        // Create expected destination path for comparison.
-        Path expectedPath = outputFolder.resolve("2024")
-            .resolve("12").resolve("Duplicates - test").resolve(photo.getFileName());
-
-        // Call the planSortedPhotoDestination method.
-        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(outputFolder, photoDate, photo, firstDuplicate);
 
         assertTrue(plannedDestination.equals(expectedPath));
     }

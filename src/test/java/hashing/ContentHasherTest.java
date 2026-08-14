@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
 public class ContentHasherTest 
     extends TestCase
@@ -42,8 +43,8 @@ public class ContentHasherTest
         ContentHasher contentHasher = new ContentHasher();
 
         // Set up resources.
-        File photo1 = getTestResourceFile("IMG_1697.JPG");
-        File photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG");
+        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
         
         // Call hash method.
         String hash1 = contentHasher.createContentHash(photo1);
@@ -59,8 +60,8 @@ public class ContentHasherTest
         ContentHasher contentHasher = new ContentHasher();
 
         // Set up resources.
-        File photo1 = getTestResourceFile("IMG_1697.JPG");
-        File photo2 = getTestResourceFile("Y99.JPG");
+        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path photo2 = getTestResourceFile("Y99.JPG").toPath();
         
         // Call hash method.
         String hash1 = contentHasher.createContentHash(photo1);
@@ -76,7 +77,7 @@ public class ContentHasherTest
         ContentHasher contentHasher = new ContentHasher();
 
         // Set up resources.
-        File photo1 = getTestResourceFile("IMG_1697.JPG");
+        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
         
         // Call hash method.
         String hash1 = contentHasher.createContentHash(photo1);
@@ -92,7 +93,7 @@ public class ContentHasherTest
         ContentHasher contentHasher = new ContentHasher();
 
         // Set up resources.
-        File photo1 = getTestResourceFile("invalid_image.jpg");
+        Path photo1 = getTestResourceFile("invalid_image.jpg").toPath();
         
         // Call hash method and catch ContentHasherException
         try {
