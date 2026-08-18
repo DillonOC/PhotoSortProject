@@ -30,5 +30,9 @@ public class DuplicateDetector {
             return null;
         }
     }
+
+    public void updatePath(String hash, Path photo) {
+        duplicateMap.replace(hash, photo);
+    }
     
 }

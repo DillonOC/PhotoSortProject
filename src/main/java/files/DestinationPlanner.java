@@ -25,4 +25,10 @@ public class DestinationPlanner
         return destination;
     }
 
+    public Path planNoDatePhotoDestination(Path outputFolder, Path photo)
+    {
+        Path destination = outputFolder.resolve("No_date").resolve(photo.getFileName());
+        
+        return destination;
+    }
 }
