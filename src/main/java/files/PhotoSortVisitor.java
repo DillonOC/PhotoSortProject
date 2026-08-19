@@ -66,7 +66,7 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
             
             try {
                 hash = hasher.createContentHash(file);
-            } catch(hashing.ContentHasherException e) {
+            } catch(ContentHasherException e) {
                 recordFailedVisit(file);
                 return CONTINUE;
             }
