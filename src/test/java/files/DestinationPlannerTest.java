@@ -64,24 +64,6 @@ public class DestinationPlannerTest
 
         assertTrue(plannedDestination.equals(expectedPath));
     }
-
-    public void testPlanExactDuplicatePhotoDestinationBuildsYearMonthPathWithFilenameJanuary() throws Exception 
-    {
-        // Instantiate DestinationPlanner Object
-        DestinationPlanner destinationPlanner = new DestinationPlanner();
-
-        // Set up resources
-        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
-        Path firstDuplicate = Path.of("testfolder", "test");
-
-        // Create expected destination path for comparison.
-        Path expectedPath = firstDuplicate.getParent().resolve("Duplicates - test").resolve(photo.getFileName());
-
-        // Call the planSortedPhotoDestination method.
-        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(photo, firstDuplicate);
-
-        assertTrue(plannedDestination.equals(expectedPath));
-    }
     
     public void testPlanSortedPhotoDestinationBuildsYearMonthPathWithFilenameDecember() throws Exception 
     {
@@ -106,6 +88,44 @@ public class DestinationPlannerTest
 
         // Call the planSortedPhotoDestination method.
         Path plannedDestination = destinationPlanner.planSortedPhotoDestination(outputFolder, photoDate, photo);
+
+        assertTrue(plannedDestination.equals(expectedPath));
+    }
+
+    public void testPlanExactDuplicatePhotoDestination() throws Exception 
+    {
+        // Instantiate DestinationPlanner Object
+        DestinationPlanner destinationPlanner = new DestinationPlanner();
+
+        // Set up resources
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+        Path firstDuplicate = Path.of("testfolder", "test");
+
+        // Create expected destination path for comparison.
+        Path expectedPath = firstDuplicate.getParent().resolve("Duplicates - test").resolve(photo.getFileName());
+
+        // Call the planSortedPhotoDestination method.
+        Path plannedDestination = destinationPlanner.planExactDuplicatePhotoDestination(photo, firstDuplicate);
+
+        assertTrue(plannedDestination.equals(expectedPath));
+    }
+
+    public void testPlanNoDatePhotoDestination() throws Exception 
+    {
+        // Instantiate DestinationPlanner Object
+        DestinationPlanner destinationPlanner = new DestinationPlanner();
+
+        // Set up resources
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
+        
+        // Create output folder path for destinationplanner input
+        Path outputFolder = Path.of("output");
+
+        // Create expected destination path for comparison.
+        Path expectedPath = outputFolder.resolve("No_date").resolve(photo.getFileName());
+
+        // Call the planSortedPhotoDestination method.
+        Path plannedDestination = destinationPlanner.planNoDatePhotoDestination(outputFolder, photo);
 
         assertTrue(plannedDestination.equals(expectedPath));
     }
