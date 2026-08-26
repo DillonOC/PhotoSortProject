@@ -249,12 +249,15 @@ public class PhotoSortVisitorTest extends TestCase {
 
         Files.walkFileTree(inputDir, visitor);
 
-
-        System.out.println(Files.exists(outputDir.resolve("No_date")));
         assertTrue(Files.exists(expectedPath1));
         assertTrue(Files.exists(expectedPath2));
         assertTrue(Files.exists(expectedPath3));
         assertTrue(Files.exists(expectedPath4));
         assertTrue(Files.exists(inputDir.resolve("test").resolve("test.txt")));
+
+        assertTrue(Files.notExists(inputDir.resolve("Y99.JPG")));
+        assertTrue(Files.notExists(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")));
+        assertTrue(Files.notExists(inputDir.resolve("test").resolve("IMG_1697.JPG")));
+        assertTrue(Files.notExists(nestedDirs.resolve("test").resolve("deeper-test").resolve("IMG_1697-no-metadata.JPG")));
     }
 }

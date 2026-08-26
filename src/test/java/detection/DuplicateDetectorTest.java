@@ -59,7 +59,6 @@ public class DuplicateDetectorTest
 
         // Set up resources
         Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
-        Path photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
         String hash1 = "test1";
         String hash2 = "test2";
 
