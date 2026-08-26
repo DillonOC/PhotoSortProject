@@ -37,7 +37,7 @@ public class DuplicateDetectorTest
         return new File(resource.toURI());
     }
 
-    public void testFirstHashIsNotDuplicate() throws Exception 
+    public void testFirstHashIsNotDuplicateAndSameHashRecognisedAfterAdding() throws Exception 
     {
         // Instantiate DuplicateDetector Object
         DuplicateDetector duplicateDetector = new DuplicateDetector();
@@ -47,23 +47,9 @@ public class DuplicateDetectorTest
         String hash = "test";
 
         // Call duplicate detector
-        assertTrue(duplicateDetector.detectDuplicate(hash, photo) == null);
-    }
-
-    public void testSameHashDetectedAsDuplicate() throws Exception 
-    {
-        // Note: Two duplicate but different images are used here to ensure only the hash is considered.
-        // Instantiate DuplicateDetector Object
-        DuplicateDetector duplicateDetector = new DuplicateDetector();
-
-        // Set up resources
-        Path photo1 = getTestResourceFile("IMG_1697.JPG").toPath();
-        Path photo2 = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
-        String hash = "test";
-
-        // Call duplicate detector
-        assertTrue(duplicateDetector.detectDuplicate(hash, photo1) == null);
-        assertTrue(duplicateDetector.detectDuplicate(hash, photo2).equals(photo1));
+        assertTrue(duplicateDetector.detectDuplicate(hash) == null);
+        duplicateDetector.addToDuplicateMap(hash, photo);
+        assertTrue(duplicateDetector.detectDuplicate(hash).equals(photo));
     }
 
     public void testDifferentHashIsNotDuplicate() throws Exception
@@ -78,8 +64,9 @@ public class DuplicateDetectorTest
         String hash2 = "test2";
 
         // Call duplicate detector
-        assertTrue(duplicateDetector.detectDuplicate(hash1, photo1) == null);
-        assertTrue(duplicateDetector.detectDuplicate(hash2, photo2) == null);
+        assertTrue(duplicateDetector.detectDuplicate(hash1) == null);
+        duplicateDetector.addToDuplicateMap(hash1, photo1);
+        assertTrue(duplicateDetector.detectDuplicate(hash2) == null);
     }
 
     public void testNewDetectorStartsEmpty() throws Exception
@@ -93,8 +80,9 @@ public class DuplicateDetectorTest
         String hash = "test";
 
         // Call duplicate detector
-        assertTrue(duplicateDetector1.detectDuplicate(hash, photo) == null);
-        assertTrue(duplicateDetector1.detectDuplicate(hash, photo).equals(photo));
-        assertTrue(duplicateDetector2.detectDuplicate(hash, photo) == null);
+        assertTrue(duplicateDetector1.detectDuplicate(hash) == null);
+        duplicateDetector1.addToDuplicateMap(hash, photo);
+        assertTrue(duplicateDetector1.detectDuplicate(hash).equals(photo));
+        assertTrue(duplicateDetector2.detectDuplicate(hash) == null);
     }
 }

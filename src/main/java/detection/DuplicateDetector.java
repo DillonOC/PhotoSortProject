@@ -15,24 +15,14 @@ public class DuplicateDetector {
     }
 
     // Method for adding to Map
-    private void addToDuplicateMap(String hash, Path photo) 
+    public void addToDuplicateMap(String hash, Path photo) 
     {
         duplicateMap.put(hash, photo);
     }
 
-    public Path detectDuplicate(String hash, Path photo)
+    public Path detectDuplicate(String hash)
     {
-        if(duplicateMap.containsKey(hash)) {
-            return duplicateMap.get(hash);
-        }
-        else {
-            addToDuplicateMap(hash, photo);
-            return null;
-        }
-    }
-
-    public void updatePath(String hash, Path photo) {
-        duplicateMap.replace(hash, photo);
+        return duplicateMap.get(hash);
     }
     
 }

@@ -158,4 +158,103 @@ public class PhotoSortVisitorTest extends TestCase {
         assertTrue(Files.exists(outputDir));
         assertTrue(Files.notExists(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")));
     }
+
+    public void testDoesNotMoveNonPhotoFile() throws Exception {
+
+        Path inputDir = tempDirectory.resolve("input");
+        Files.createDirectory(inputDir);
+
+        Path testFile =
+                Path.of("src/test/resources/visitor/not-photo/test.txt");
+
+        Files.copy(
+                testFile,
+                inputDir.resolve("test.txt")
+        );
+
+        Path outputDir = tempDirectory.resolve("output");
+
+
+        PhotoSortVisitor visitor = new PhotoSortVisitor(outputDir);
+
+        Files.walkFileTree(inputDir, visitor);
+
+        assertTrue(Files.exists(inputDir.resolve("test.txt")));
+        assertTrue(Files.notExists(outputDir));
+    }
+
+    public void testMovesNestedPhoto() throws Exception {
+
+        Path inputDir = tempDirectory.resolve("input");
+        Files.createDirectory(inputDir);
+
+        Path nestedDirs = inputDir.resolve("test").resolve("deeper-test");
+        Files.createDirectories(nestedDirs);
+
+        Path testPhoto1 =
+                Path.of("src/test/resources/visitor/nested/Y99.JPG");
+
+        Path testPhoto2 = 
+                Path.of("src/test/resources/visitor/nested/IMG_1697-no-datetimeoriginal.JPG");
+
+        Path testPhoto3 = 
+                Path.of("src/test/resources/visitor/nested/test/IMG_1697.JPG");
+        
+        Path testNonPhoto = 
+                Path.of("src/test/resources/visitor/nested/test/test.txt");
+            
+        Path testPhoto4 = 
+                Path.of("src/test/resources/visitor/nested/test/deeper-test/IMG_1697-no-metadata.JPG");
+
+        Files.copy(
+                testPhoto1,
+                inputDir.resolve("Y99.JPG")
+        );
+
+        Files.copy(
+                testPhoto2,
+                inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")
+        );
+
+        Files.copy(
+                testPhoto3,
+                inputDir.resolve("test").resolve("IMG_1697.JPG")
+        );
+
+        Files.copy(
+                testNonPhoto,
+                inputDir.resolve("test").resolve("test.txt")
+        );
+
+        Files.copy(
+                testPhoto4,
+                nestedDirs.resolve("IMG_1697-no-metadata.JPG")
+        );
+
+        Path outputDir = tempDirectory.resolve("output");
+
+        Path expectedPath1 = outputDir.resolve("2024")
+            .resolve("04").resolve("IMG_1697.JPG");
+        
+        Path expectedPath2 = outputDir.resolve("2024")
+            .resolve("04").resolve("Duplicates - IMG_1697.JPG").resolve("IMG_1697-no-datetimeoriginal.JPG");
+
+        Path expectedPath3 = outputDir.resolve("2024")
+            .resolve("04").resolve("Duplicates - IMG_1697.JPG").resolve("IMG_1697-no-metadata.JPG");
+
+        Path expectedPath4 = outputDir.resolve("2018")
+            .resolve("11").resolve("Y99.JPG");
+
+        PhotoSortVisitor visitor = new PhotoSortVisitor(outputDir);
+
+        Files.walkFileTree(inputDir, visitor);
+
+
+        System.out.println(Files.exists(outputDir.resolve("No_date")));
+        assertTrue(Files.exists(expectedPath1));
+        assertTrue(Files.exists(expectedPath2));
+        assertTrue(Files.exists(expectedPath3));
+        assertTrue(Files.exists(expectedPath4));
+        assertTrue(Files.exists(inputDir.resolve("test").resolve("test.txt")));
+    }
 }

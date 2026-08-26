@@ -73,7 +73,9 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
 
             DestinationPlanner planner = new DestinationPlanner();
 
-            Path duplicate = detector.detectDuplicate(hash, file);
+            Path duplicate = detector.detectDuplicate(hash);
+
+            boolean addToDetector = duplicate == null;
 
             FileMover fileMover = new FileMover();
 
@@ -95,13 +97,11 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
                 } catch(DateExtractionException e) {
                     destination = planner.planNoDatePhotoDestination(outputFolder, file);
                 }
-
-                detector.updatePath(hash, destination);
                 
             }
             else {
 
-                if(duplicate.getParent().getFileName().toString().equals("No_date")) {
+                if("No_date".equals(duplicate.getParent().getFileName().toString())) {
 
                     DateExtractor dateExtractor = new DateExtractor();
                     Calendar photoDate;
@@ -110,17 +110,31 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
                         photoDate = dateExtractor.extractDate(file.toFile());
                         if(photoDate != null) { 
 
-                            destination = planner.planSortedPhotoDestination(outputFolder, photoDate, file);
+                            Path datedDestination = planner.planSortedPhotoDestination(outputFolder, photoDate, file);
 
-                            Path firstDuplicateDestination = planner.planExactDuplicatePhotoDestination(duplicate, destination);
+                            Path oldDuplicateDestination = planner.planExactDuplicatePhotoDestination(duplicate, datedDestination);
 
                             try {
-                                fileMover.moveToDestination(duplicate, firstDuplicateDestination);
+                                // Promote the dated copy
+                                fileMover.moveToDestination(file, datedDestination);
+
+                                // Update map with dated destination
+                                detector.addToDuplicateMap(hash, datedDestination);
+
+                                try {
+                                    fileMover.moveToDestination(duplicate, oldDuplicateDestination);
+                                }
+                                catch (IOException e) {
+                                    System.out.println(
+                                        "Unable to move old no-date duplicate: " + duplicate
+                                    );
+                                }
+                                
                             } catch(IOException e) {
-                                System.out.println("First Duplicate with no date unable to be moved.");
+                                recordFailedVisit(file);
                             }
                             
-                            detector.updatePath(hash, destination);
+                            return CONTINUE;
                         }
 
                         else {
@@ -141,6 +155,9 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
 
             try {
                 fileMover.moveToDestination(file, destination);
+                if(addToDetector) {
+                    detector.addToDuplicateMap(hash, destination);
+                }
             } catch(IOException e) {
                 recordFailedVisit(file);
             }
