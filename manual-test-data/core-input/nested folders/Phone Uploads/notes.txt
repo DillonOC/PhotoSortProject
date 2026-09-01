@@ -1,0 +1,1 @@
+This is deliberately not a photo. PhotoSort should leave it in the input tree.
