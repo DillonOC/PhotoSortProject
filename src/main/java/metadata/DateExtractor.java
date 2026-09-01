@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPException;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.xmp.XmpDirectory;
 
 public class DateExtractor {
     
@@ -33,7 +36,6 @@ public class DateExtractor {
         
         // Checking for EXIF Metadata
         ExifSubIFDDirectory directoryExif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-        
         if (directoryExif != null) {
             // Get the Date Taken (DateTimeOriginal) from EXIF
             Date dateTaken = directoryExif.getDateOriginal();
@@ -43,15 +45,23 @@ public class DateExtractor {
                 extractedDate = Calendar.getInstance();
                 extractedDate.setTime(dateTaken);
                 System.out.println("Date Taken: " + extractedDate.getTime());
+                return extractedDate;
             } 
-            else {
-                System.out.println("No EXIF DateTimeOriginal tag found.");
-            }
         } 
-        else {
-            System.out.println("No EXIF metadata found.");
-        }
         
-        return extractedDate;
+        // Checking for XMP metadata
+        XmpDirectory directoryXmp = metadata.getFirstDirectoryOfType(XmpDirectory.class);
+        if (directoryXmp != null) {
+            try {
+                extractedDate = directoryXmp.getXMPMeta().getPropertyCalendar(XMPConst.NS_EXIF,"DateTimeOriginal");
+                if (extractedDate != null) {
+                    return extractedDate;
+                }
+            }
+            catch (XMPException e) {
+                // Decide what to do
+            }
+        }       
+        return null;
     }
 }
