@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
@@ -82,6 +83,59 @@ public class PhotoSortVisitorTest extends TestCase {
         assertTrue(Files.exists(expectedPath.getParent().getParent()));
         assertTrue(Files.exists(outputDir));
         assertTrue(Files.notExists(inputDir.resolve("IMG_1697.JPG")));
+    }
+
+    public void testPromotesDuplicatePhoto() throws Exception {
+
+        Path inputDir = tempDirectory.resolve("input");
+        Files.createDirectory(inputDir);
+
+        Path testPhoto1 =
+                Path.of("src/test/resources/visitor/duplicates/IMG_1697.JPG");
+
+        Path testPhoto2 = 
+                Path.of("src/test/resources/visitor/duplicates/IMG_1697-no-datetimeoriginal.JPG");
+
+        Files.copy(
+                testPhoto1,
+                inputDir.resolve("IMG_1697.JPG")
+        );
+
+        Files.copy(
+                testPhoto2,
+                inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")
+        );
+
+        Path outputDir = tempDirectory.resolve("output");
+
+        Path expectedPathNonDupe = outputDir.resolve("2024")
+            .resolve("04").resolve("IMG_1697.JPG");
+
+        Path expectedPathDupe = expectedPathNonDupe.getParent()
+            .resolve("Duplicates - IMG_1697.JPG").resolve("IMG_1697-no-datetimeoriginal.JPG");
+
+
+        PhotoSortVisitor visitor = new PhotoSortVisitor(outputDir);
+
+        visitor.visitFile(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG"),
+                    Files.readAttributes(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG"),BasicFileAttributes.class));
+        
+        visitor.visitFile(inputDir.resolve("IMG_1697.JPG"),
+                    Files.readAttributes(inputDir.resolve("IMG_1697.JPG"),BasicFileAttributes.class));
+
+        assertTrue(Files.exists(expectedPathNonDupe));
+        assertTrue(Files.exists(expectedPathNonDupe.getParent()));
+        assertTrue(Files.exists(expectedPathNonDupe.getParent().getParent()));
+        assertTrue(Files.exists(outputDir));
+        assertTrue(Files.notExists(inputDir.resolve("IMG_1697.JPG")));
+
+        assertTrue(Files.exists(expectedPathDupe));
+        assertTrue(Files.exists(expectedPathDupe.getParent()));
+        assertTrue(Files.exists(expectedPathDupe.getParent().getParent()));
+        assertTrue(Files.exists(expectedPathDupe.getParent().getParent().getParent()));
+        assertTrue(Files.exists(outputDir));
+        assertTrue(Files.notExists(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")));
+        assertTrue(Files.notExists(outputDir.resolve("No_date").resolve("IMG_1697-no-datetimeoriginal.JPG")));
     }
 
     public void testMovesDuplicatePhoto() throws Exception {
@@ -258,6 +312,6 @@ public class PhotoSortVisitorTest extends TestCase {
         assertTrue(Files.notExists(inputDir.resolve("Y99.JPG")));
         assertTrue(Files.notExists(inputDir.resolve("IMG_1697-no-datetimeoriginal.JPG")));
         assertTrue(Files.notExists(inputDir.resolve("test").resolve("IMG_1697.JPG")));
-        assertTrue(Files.notExists(nestedDirs.resolve("test").resolve("deeper-test").resolve("IMG_1697-no-metadata.JPG")));
+        assertTrue(Files.notExists(nestedDirs.resolve("IMG_1697-no-metadata.JPG")));
     }
 }
