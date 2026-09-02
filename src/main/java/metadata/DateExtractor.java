@@ -2,6 +2,7 @@ package metadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,12 +12,16 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.iptc.IptcDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
 
 public class DateExtractor {
     
-    public Calendar extractDate(File photo) throws DateExtractionException 
+    public Calendar extractDate(Path photo) throws DateExtractionException 
     {
+        // Convert Path to file 
+        File photoFile = photo.toFile();
+
         // Initialize the calendar object
         Calendar extractedDate = null;
 
@@ -25,13 +30,13 @@ public class DateExtractor {
 
         try {
             // Read metadata
-            metadata = ImageMetadataReader.readMetadata(photo);
+            metadata = ImageMetadataReader.readMetadata(photoFile);
         }
         catch(ImageProcessingException err) {
-            throw new DateExtractionException("Image processing failed for: " + photo, err);
+            throw new DateExtractionException("Image processing failed for: " + photoFile, err);
         }
         catch(IOException err) {
-            throw new DateExtractionException("IO Exception for: " + photo, err);
+            throw new DateExtractionException("IO Exception for: " + photoFile, err);
         }
         
         // Checking for EXIF Metadata
@@ -44,12 +49,11 @@ public class DateExtractor {
                 // Convert Date to Calendar
                 extractedDate = Calendar.getInstance();
                 extractedDate.setTime(dateTaken);
-                System.out.println("Date Taken: " + extractedDate.getTime());
                 return extractedDate;
             } 
         } 
         
-        // Checking for XMP metadata
+        // Checking for XMP datetime original
         XmpDirectory directoryXmp = metadata.getFirstDirectoryOfType(XmpDirectory.class);
         if (directoryXmp != null) {
             try {
@@ -59,9 +63,23 @@ public class DateExtractor {
                 }
             }
             catch (XMPException e) {
-                // Decide what to do
+                throw new DateExtractionException("XMP metadata processing failed for: " + photoFile, e);
             }
-        }       
+        } 
+        
+        // Checking for IPTC DateCreated
+        IptcDirectory directoryIptc = metadata.getFirstDirectoryOfType(IptcDirectory.class);
+        if (directoryIptc != null) {
+            
+            Date dateTaken = directoryIptc.getDateCreated();
+            if (dateTaken != null) {
+                // Convert Date to Calendar
+                extractedDate = Calendar.getInstance();
+                extractedDate.setTime(dateTaken);
+                return extractedDate;
+            }
+        }
+
         return null;
     }
 }

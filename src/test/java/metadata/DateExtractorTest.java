@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Calendar;
 
 
@@ -44,7 +45,7 @@ public class DateExtractorTest
     /**
      * Tests
      */
-    public void testReturnsDateTimeOriginalWhenPresent() throws Exception
+    public void testReturnsExifDateTimeOriginalWhenPresent() throws Exception
     {
         // Create expected date calendar object for comparison.
         Calendar expected = Calendar.getInstance();
@@ -54,7 +55,7 @@ public class DateExtractorTest
 
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("IMG_1697.JPG");
+        Path photo = getTestResourceFile("IMG_1697.JPG").toPath();
         
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
@@ -73,7 +74,7 @@ public class DateExtractorTest
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("IMG_1697-no-datetimeoriginal.JPG");
+        Path photo = getTestResourceFile("IMG_1697-no-datetimeoriginal.JPG").toPath();
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null
@@ -84,7 +85,7 @@ public class DateExtractorTest
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("IMG_1697-no-metadata.JPG");
+        Path photo = getTestResourceFile("IMG_1697-no-metadata.JPG").toPath();
         Calendar dateTaken = dateExtractor.extractDate(photo);
 
         // Assertion to check date is null
@@ -95,7 +96,7 @@ public class DateExtractorTest
     {
         // Create DateExtractor object and call the extractDate method.
         DateExtractor dateExtractor = new DateExtractor();
-        File photo = getTestResourceFile("invalid_image.jpg");
+        Path photo = getTestResourceFile("invalid_image.jpg").toPath();
 
         // Catch the expected DateExtractionException and fail if not
         try {
@@ -105,19 +106,69 @@ public class DateExtractorTest
         catch(DateExtractionException err) {}
     }
 
-        public void testThrowsErrorWhenFileNotFound() throws Exception
-        {
-            // Create DateExtractor object.
-            DateExtractor dateExtractor = new DateExtractor();
+    public void testThrowsErrorWhenFileNotFound() throws Exception
+    {
+        // Create DateExtractor object.
+        DateExtractor dateExtractor = new DateExtractor();
 
-            // Set up resource.
-            File photo = new File("this-file-should-not-exist.jpg");
+        // Set up resource.
+        Path photo = new File("this-file-should-not-exist.jpg").toPath();
 
-            // Catch the expected DateExtractionException and fail if not
-            try {
-                dateExtractor.extractDate(photo);
-                fail("Expected DateExtractionException to be thrown");
-            }
-            catch(DateExtractionException err) {}
+        // Catch the expected DateExtractionException and fail if not
+        try {
+            dateExtractor.extractDate(photo);
+            fail("Expected DateExtractionException to be thrown");
         }
+        catch(DateExtractionException err) {}
+    }
+
+    public void testReturnXmpDateTimeOriginal() throws Exception
+    {
+        // Create expected date calendar object for comparison.
+        Calendar expected = Calendar.getInstance();
+        expected.clear();
+        expected.set(2021, Calendar.JUNE, 15, 14, 23, 37);
+        expected.set(Calendar.MILLISECOND, 979);
+
+        // Create DateExtractor object.
+        DateExtractor dateExtractor = new DateExtractor();
+
+        // Set up resource.
+        Path photo = getTestResourceFile("xmp-datetimeoriginal-only.jpg").toPath();
+
+        Calendar dateTaken = dateExtractor.extractDate(photo);
+
+        // Assertions to check date is as expected.
+        assertTrue(dateTaken.get(Calendar.YEAR) == expected.get(Calendar.YEAR));
+        assertTrue(dateTaken.get(Calendar.MONTH) == expected.get(Calendar.MONTH));
+        assertTrue(dateTaken.get(Calendar.DAY_OF_MONTH) == expected.get(Calendar.DAY_OF_MONTH));
+        assertTrue(dateTaken.get(Calendar.HOUR_OF_DAY) == expected.get(Calendar.HOUR_OF_DAY));
+        assertTrue(dateTaken.get(Calendar.MINUTE) == expected.get(Calendar.MINUTE));
+        assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));  
+    }
+
+    public void testReturnICMPDateTimeCreated() throws Exception
+    {
+        // Create expected date calendar object for comparison.
+        Calendar expected = Calendar.getInstance();
+        expected.clear();
+        expected.set(2024, Calendar.JUNE, 18, 14, 23, 37);
+        expected.set(Calendar.MILLISECOND, 979);
+
+        // Create DateExtractor object.
+        DateExtractor dateExtractor = new DateExtractor();
+
+        // Set up resource.
+        Path photo = getTestResourceFile("iptc-datecreated-only.jpg").toPath();
+
+        Calendar dateTaken = dateExtractor.extractDate(photo);
+
+        // Assertions to check date is as expected.
+        assertTrue(dateTaken.get(Calendar.YEAR) == expected.get(Calendar.YEAR));
+        assertTrue(dateTaken.get(Calendar.MONTH) == expected.get(Calendar.MONTH));
+        assertTrue(dateTaken.get(Calendar.DAY_OF_MONTH) == expected.get(Calendar.DAY_OF_MONTH));
+        assertTrue(dateTaken.get(Calendar.HOUR_OF_DAY) == expected.get(Calendar.HOUR_OF_DAY));
+        assertTrue(dateTaken.get(Calendar.MINUTE) == expected.get(Calendar.MINUTE));
+        assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));  
+    }
 }

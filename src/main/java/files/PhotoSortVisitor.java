@@ -87,7 +87,7 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
                 Calendar photoDate;
 
                 try {
-                    photoDate = dateExtractor.extractDate(file.toFile());
+                    photoDate = dateExtractor.extractDate(file);
                     if(photoDate != null) { 
                         destination = planner.planSortedPhotoDestination(outputFolder, photoDate, file);
                     }
@@ -107,7 +107,7 @@ public class PhotoSortVisitor extends SimpleFileVisitor<Path> {
                     Calendar photoDate;
 
                     try {
-                        photoDate = dateExtractor.extractDate(file.toFile());
+                        photoDate = dateExtractor.extractDate(file);
                         if(photoDate != null) { 
 
                             Path datedDestination = planner.planSortedPhotoDestination(outputFolder, photoDate, file);
