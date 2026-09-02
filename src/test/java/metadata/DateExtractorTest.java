@@ -7,6 +7,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 /**
@@ -128,7 +129,6 @@ public class DateExtractorTest
         Calendar expected = Calendar.getInstance();
         expected.clear();
         expected.set(2021, Calendar.JUNE, 15, 14, 23, 37);
-        expected.set(Calendar.MILLISECOND, 979);
 
         // Create DateExtractor object.
         DateExtractor dateExtractor = new DateExtractor();
@@ -147,13 +147,12 @@ public class DateExtractorTest
         assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));  
     }
 
-    public void testReturnICMPDateTimeCreated() throws Exception
+    public void testReturnIptcDateTimeCreated() throws Exception
     {
         // Create expected date calendar object for comparison.
         Calendar expected = Calendar.getInstance();
         expected.clear();
         expected.set(2024, Calendar.JUNE, 18, 14, 23, 37);
-        expected.set(Calendar.MILLISECOND, 979);
 
         // Create DateExtractor object.
         DateExtractor dateExtractor = new DateExtractor();
@@ -170,5 +169,52 @@ public class DateExtractorTest
         assertTrue(dateTaken.get(Calendar.HOUR_OF_DAY) == expected.get(Calendar.HOUR_OF_DAY));
         assertTrue(dateTaken.get(Calendar.MINUTE) == expected.get(Calendar.MINUTE));
         assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));  
+    }
+
+    public void testReturnXmpPhotoshopDateCreated() throws Exception
+    {
+        // Create expected date calendar object for comparison.
+        Calendar expected = Calendar.getInstance();
+        expected.clear();
+        expected.set(2021, Calendar.JUNE, 15, 14, 32, 18);
+        // Create DateExtractor object.
+        DateExtractor dateExtractor = new DateExtractor();
+
+        // Set up resource.
+        Path photo = getTestResourceFile("xmp_photoshop_datecreated_only.jpg").toPath();
+
+        Calendar dateTaken = dateExtractor.extractDate(photo);
+
+        // Assertions to check date is as expected.
+        assertTrue(dateTaken.get(Calendar.YEAR) == expected.get(Calendar.YEAR));
+        assertTrue(dateTaken.get(Calendar.MONTH) == expected.get(Calendar.MONTH));
+        assertTrue(dateTaken.get(Calendar.DAY_OF_MONTH) == expected.get(Calendar.DAY_OF_MONTH));
+        assertTrue(dateTaken.get(Calendar.HOUR_OF_DAY) == expected.get(Calendar.HOUR_OF_DAY));
+        assertTrue(dateTaken.get(Calendar.MINUTE) == expected.get(Calendar.MINUTE));
+        assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));  
+    }
+
+    public void testReturnsExifGpsDate() throws Exception
+    {
+        // Create expected date calendar object for comparison.
+        Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        expected.clear();
+        expected.set(2021, Calendar.JUNE, 15, 14, 32, 18);
+
+        // Create DateExtractor object and call the extractDate method.
+        DateExtractor dateExtractor = new DateExtractor();
+        Path photo = getTestResourceFile("exif-gps-date-only.jpg").toPath();
+        
+        Calendar dateTaken = dateExtractor.extractDate(photo);
+
+        // Assertions to check date is as expected.
+        assertTrue(dateTaken.get(Calendar.YEAR) == expected.get(Calendar.YEAR));
+        assertTrue(dateTaken.get(Calendar.MONTH) == expected.get(Calendar.MONTH));
+        assertTrue(dateTaken.get(Calendar.DAY_OF_MONTH) == expected.get(Calendar.DAY_OF_MONTH));
+        assertTrue(dateTaken.get(Calendar.HOUR_OF_DAY) == expected.get(Calendar.HOUR_OF_DAY));
+        assertTrue(dateTaken.get(Calendar.MINUTE) == expected.get(Calendar.MINUTE));
+        assertTrue(dateTaken.get(Calendar.SECOND) == expected.get(Calendar.SECOND));
+        assertTrue(dateTaken.get(Calendar.MILLISECOND) == expected.get(Calendar.MILLISECOND));
+
     }
 }
